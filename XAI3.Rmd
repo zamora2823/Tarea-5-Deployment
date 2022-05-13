@@ -155,3 +155,4 @@ p4 <- ggplot(sampled, aes(x=floors, y = results$floors)) + geom_line() + geom_ru
 ggpubr::ggarrange(p1, p2, p3, p4, nrow=1)
 ```
 
+Observing the plots we can conclude that the largest differences can be seen in bathrooms and sqft living. As the number of bathrooms and sqft living increase, the price increases exponentially. But when the number of bathrooms is higher than 4, price stays constant. When the number of floors invrease, the price also increases, but on a smaller scale. However, when the number of floors is 2, the model seems to predict a slight descent in the price. In relation to bedrooms, there is a drastic decrease on the price of a house from 2 to 3 bedrooms, but then it increases and from 5 to 6 bedrooms it decreases again.
