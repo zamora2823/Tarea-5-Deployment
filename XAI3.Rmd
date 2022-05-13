@@ -1,0 +1,125 @@
+---
+title: "XAI 3: Model-Agnostic methods"
+output: html_notebook
+---
+
+## EXERCISE:
+
+Apply PDP to the regression example of predicting bike rentals. Fit a random forest approximation for the prediction of bike rentals (**cnt**). Use the partial dependence plot to visualize the relationships the model learned. Use the slides shown in class as model.  
+
+## QUESTION:
+
+Analyse the influence of **days since 2011, temperature, humidity** and **wind speed** on the predicted bike counts.
+
+
+```{r}
+library(dplyr)
+library(plotly)
+library(reshape2)
+library(lubridate)
+library(randomForestSRC)
+
+#setwd("/Users/cmonserr/OneDrive - UPV/Trabajo_2/Asignaturas/Evaluacion de modelos/Practicas/Practica 3/Bike-Sharing-Dataset")
+days <- read.csv("day.csv")
+hour <- read.csv("hour.csv")
+
+days$dteday <- as_date(days$dteday)
+days_since <- select(days, workingday, holiday, temp, hum, windspeed, cnt)
+days_since$days_since_2011 <- int_length(interval(ymd("2011-01-01"), days$dteday)) / (3600*24)
+days_since$SUMMER <- ifelse(days$season == 3, 1, 0)
+days_since$FALL <- ifelse(days$season == 4, 1, 0)
+days_since$WINTER <- ifelse(days$season == 1, 1, 0)
+days_since$MISTY <- ifelse(days$weathersit == 2, 1, 0)
+days_since$RAIN <- ifelse(days$weathersit == 3 | days$weathersit == 4, 1, 0)
+days_since$temp <- days_since$temp * 47 - 8
+days_since$hum <- days_since$hum * 100
+days_since$windspeed <- days_since$windspeed * 67
+
+rf <- rfsrc(cnt~., data=days_since)
+
+results <- select(days_since, days_since_2011, temp, hum, windspeed, cnt)
+nr <- nrow(days_since)
+for(c in names(results)[1:4])
+{
+  for(i in 1:nr){
+    r <- days_since
+    r[[c]] <- days_since[[c]][i]
+    sal <- predict(rf, r)$predicted
+    results[[c]][i] <- sum(sal) / nr
+  }
+}
+
+
+```
+
+## EXERCISE:
+
+Generate a 2D Partial Dependency Plot with humidity and temperature to predict the number of bikes rented depending of those parameters.
+
+BE CAREFUL: due to the size, extract a set of random samples from the BBDD before generating the the data for the Partial Dependency Plot. 
+
+Show the density distribution of both input features with the 2D plot as shown in the class slides. 
+
+TIP: Use geom_tile() to generate the 2D plot. Set width and height to avoid holes. 
+
+## QUESTION:
+
+Interpret the results.
+
+
+```{r}
+
+sampled <- sample_n(days_since, 40)
+temp <- sampled$temp
+hum <- sampled$hum
+th <- inner_join(data.frame(temp),data.frame(hum), by=character())
+th$p <- 0
+
+for(i in 1:nrow(th)){
+  r <- days_since
+  r[["temp"]] <- th[["temp"]][i]
+  r[["hum"]] <- th[["hum"]][i]
+  
+  sal <- predict(rf, r)$predicted
+  th[["p"]][i] <- sum(sal) / nr
+}
+
+```
+
+
+## EXERCISE:
+
+Apply the previous concepts to predict the **price** of a house from the database **kc_house_data.csv**. In this case, use again a random forest approximation for the prediction based on the features **bedrooms**, **bathrooms**, **sqft_living**, **sqft_lot**, **floors** and **yr_built**. 
+Use the partial dependence plot to visualize the relationships the model learned.
+
+BE CAREFUL: due to the size, extract a set of random samples from the BBDD before generating the data for the Partial Dependency Plot. 
+
+## QUESTION:
+
+Analyse the influence of **bedrooms, bathrooms, sqft_living** and **floors** on the predicted price.
+
+
+```{r}
+
+d <- read.csv("kc_house_data.csv")
+
+sampled <- sample_n(d, 1000)
+
+sampled <- select(sampled, bedrooms, bathrooms, sqft_living, sqft_lot, floors, yr_built, price)
+
+rf <- rfsrc(price~., data=sampled)
+
+results <- select(sampled, bedrooms, bathrooms, sqft_living, floors, price)
+nr <- nrow(sampled)
+for(c in names(results)[1:4])
+{
+  for(i in 1:nr){
+    r <- sampled
+    r[[c]] <- sampled[[c]][i]
+    sal <- predict(rf, r)$predicted
+    results[[c]][i] <- sum(sal) / nr
+  }
+}
+
+```
+
