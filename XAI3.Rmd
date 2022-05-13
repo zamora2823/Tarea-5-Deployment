@@ -145,3 +145,13 @@ for(c in names(results)[1:4])
 
 ```
 
+```{r ex.3}
+p1 <- ggplot(sampled, aes(x=bedrooms, y = results$bedrooms)) + geom_line() + geom_rug(alpha=0.1, sides="b") + xlab("Bedrooms") + ylab(NULL)
+p2 <- ggplot(sampled, aes(x=bathrooms, y = results$bathrooms)) + geom_line() + geom_rug(alpha=0.1, sides="b")  + xlab("Bathrooms") + ylab(NULL)
+p3 <- ggplot(sampled, aes(x=sqft_living , y = results$sqft_living)) + geom_line() + geom_rug(alpha=0.1, sides="b") + xlab("Sqft living") + ylab(NULL)
+p4 <- ggplot(sampled, aes(x=floors, y = results$floors)) + geom_line() + geom_rug(alpha=0.1, sides="b")  + xlab("Floors") + ylab(NULL)
+
+
+ggpubr::ggarrange(p1, p2, p3, p4, nrow=1)
+```
+
