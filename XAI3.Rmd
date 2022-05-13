@@ -62,6 +62,10 @@ ggpubr::ggarrange(p1, p2, p3, p4, nrow=1)
 
 ```
 
+The largest differences can be seen in the temperature and days since 2011. As days pass, more bikes are rented. However, the last few days we can see a important decrease on rentals. Furthermore, the hotter, the more bikes are rented. This trend goes up to 20 degrees Celsius, then flattens and drops slightly at 30. Marks on the x-axis indicate the data distribution. 
+
+For warm but not too hot weather, the model predicts on average a high number of rented bicycles. Potential bikers are increasingly inhibited in renting a bike when humidity exceeds 60%. In addition, the more wind the fewer people like to cycle. Moreover, the predicted number of bike rentals does not fall when wind speed increases from 25 to 35 km/h, but there is not much training data, so the machine learning model could probably not learn a meaningful prediction for this range. At least intuitively, I would expect the number of bicycles to decrease with increasing wind speed, especially when the wind speed is very high.
+
 
 ## EXERCISE:
 
