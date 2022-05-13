@@ -1,4 +1,5 @@
 ---
+author: "Leandro Pérez Orero, Miquel Obrador Reina, Alejandro Zamora Donnay"
 title: "XAI 3: Model-Agnostic methods"
 output: html_notebook
 ---
@@ -10,7 +11,6 @@ Apply PDP to the regression example of predicting bike rentals. Fit a random for
 ## QUESTION:
 
 Analyse the influence of **days since 2011, temperature, humidity** and **wind speed** on the predicted bike counts.
-
 
 ```{r}
 library(dplyr)
@@ -49,8 +49,19 @@ for(c in names(results)[1:4])
   }
 }
 
+```
+
+```{r ex1}
+p1 <- ggplot(days_since, aes(x=days_since_2011, y = results$days_since_2011)) + geom_line() + geom_rug(alpha=0.1, sides="b") + ylim(0, 6000) + xlab("Days since 2011") + ylab("Prediction")
+p2 <- ggplot(days_since, aes(x=temp, y = results$temp)) + geom_line() + geom_rug(alpha=0.1, sides="b") + ylim(0, 6000) + xlab("Temperature") + ylab(NULL)
+p3 <- ggplot(days_since, aes(x=hum , y = results$hum)) + geom_line() + geom_rug(alpha=0.1, sides="b") + ylim(0, 6000) + xlab("Humidity") + ylab(NULL)
+p4 <- ggplot(days_since, aes(x=windspeed, y = results$windspeed)) + geom_line() + geom_rug(alpha=0.1, sides="b") + ylim(0, 6000) + xlab("Wind speed") + ylab(NULL)
+
+
+ggpubr::ggarrange(p1, p2, p3, p4, nrow=1)
 
 ```
+
 
 ## EXERCISE:
 
