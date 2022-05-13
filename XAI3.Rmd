@@ -101,6 +101,13 @@ for(i in 1:nrow(th)){
 
 ```
 
+```{r ex 2}
+pd <- ggplot(th, aes(x=temp, y = hum,fill=p)) + geom_tile(width =5,height=15) + guides(fill = guide_colourbar(title = "Number of bikes")) + geom_rug(alpha=0.1, sides="bl") + xlab("Temperature") + ylab("Humidity") 
+
+pd
+```
+
+The plot shows the increase in number of bike rentals at 15 (more or less). For temperature below 15 and meaningfully below 5, number of bikes rented decreases a lot, especially when there is high humidity (above 80%). However, when temperature exceeds 30 ºC, the number of rented bikes starts to fall again.
 
 ## EXERCISE:
 
